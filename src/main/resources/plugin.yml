@@ -1,0 +1,9 @@
+name: ElytraPlugin
+main: nl.imine.elytraboost.ElytraBoostPlugin
+version: 1.0
+
+commands:
+  elytraboost:
+    description: elytraboost commnad
+    usage: /elytraboost 
+    aliases: [eboost, elytrab]
