@@ -40,13 +40,7 @@ public class Remove implements SubCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Bukkit.getServer().getOnlinePlayers().forEach(p -> {
-            p.sendMessage("BOOSTERS");
-            ElytraBoosterManager.getInstance().getBoosters().forEach(b -> {
-                p.sendMessage(b.getName());
-            });
 
-        });/*
         String name = "";
         int ID = 0;
 
@@ -60,20 +54,12 @@ public class Remove implements SubCommand {
         }
 
         for (ElytraBooster booster : ElytraBoosterManager.getInstance().getBoosters()) {
-            if (usingID) {
-                if (booster.getID() == ID) {
-                    ElytraBoosterManager.getInstance().getBoosters().remove(booster);
-                    return true;
-                }
-            } else {
-                if (booster.getName().equals(name)) {
-                    ElytraBoosterManager.getInstance().getBoosters().remove(booster);
-                    return true;
-                }
+            if ((usingID ? booster.getID() == ID : booster.getName().equals(name))) {
+                booster.stopShowingLocation();
+                ElytraBoosterManager.getInstance().getBoosters().remove(booster);
+                return true;
             }
-
         }
-*/
         return false;
     }
 

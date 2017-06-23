@@ -10,8 +10,10 @@ import java.util.List;
 import nl.imine.elytraboost.command.subcommand.BoosterList;
 import nl.imine.elytraboost.command.subcommand.Create;
 import nl.imine.elytraboost.command.subcommand.Edit;
+import nl.imine.elytraboost.command.subcommand.HideLocation;
 import nl.imine.elytraboost.command.subcommand.Reload;
 import nl.imine.elytraboost.command.subcommand.Remove;
+import nl.imine.elytraboost.command.subcommand.ShowLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -34,6 +36,8 @@ public class ElytraBoostCommand implements CommandExecutor, TabCompleter {
         subcommands.add(new BoosterList());
         subcommands.add(new Reload());
         subcommands.add(new Remove());
+        subcommands.add(new ShowLocation());
+        subcommands.add(new HideLocation());
     }
 
     @Override

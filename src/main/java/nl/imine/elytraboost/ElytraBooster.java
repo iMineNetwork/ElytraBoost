@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -34,6 +35,8 @@ public class ElytraBooster {
 
     private double effectRadius;
     private float boostPower;
+
+    private transient int showingLocationID = -1;
 
     public boolean isInRange(Location location) {
         return getLocation().distance(location) <= effectRadius;
@@ -95,6 +98,11 @@ public class ElytraBooster {
         return boostPower;
     }
 
+    public long getCooldownTime() {
+        return cooldownTime;
+    }
+    
+    
     public void setBoostPower(float boostPower) {
         this.boostPower = boostPower;
     }
@@ -108,17 +116,11 @@ public class ElytraBooster {
     }
 
     public void applyBoost(Player player) {
-        try{
         player.setVelocity(new Vector(player.getVelocity().getX() * boostPower, player.getVelocity().getY(), player.getVelocity().getZ() * boostPower));
         cooldownPlayers.add(player.getUniqueId());
         Bukkit.getScheduler().scheduleSyncDelayedTask(ElytraBoostPlugin.getPlugin(), () -> {
             cooldownPlayers.remove(player.getUniqueId());
         }, cooldownTime);
-        }catch(Exception e){
-            player.sendMessage("Error");
-            System.out.println("ERROR");
-            e.printStackTrace();
-        }
     }
 
     public ElytraBooster(String name, Location location, boolean requiresUnlock, long cooldownTime, double effectRadius, float boostPower) {
@@ -130,12 +132,11 @@ public class ElytraBooster {
         this.location = location;
 
         this.worldName = location.getWorld().getName();
-        System.out.println(this.worldName + " is the name of the world");
         this.x = location.getX();
         this.y = location.getY();
         this.z = location.getZ();
 
-        requiresUnlock = false;
+        this.requiresUnlock = requiresUnlock;
 
         this.effectRadius = effectRadius;
         this.boostPower = boostPower;
@@ -146,19 +147,36 @@ public class ElytraBooster {
     public ElytraBooster() {
         highestID++;
         this.ID = highestID;
-        
+
     }
 
     public void showLocation() {
-
+        if (showingLocationID != -1) {
+            return;
+        }
         //creating a task to show 5 redstone particles every tick, stopping that tast after 5 seconds
-        int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(ElytraBoostPlugin.getPlugin(), () -> {
-            location.getWorld().spawnParticle(Particle.REDSTONE, getLocation(), 5);
-        }, 1l, 1L);
+        showingLocationID = Bukkit.getScheduler().scheduleSyncRepeatingTask(ElytraBoostPlugin.getPlugin(), () -> {
+            getLocation().getWorld().spawnParticle(Particle.VILLAGER_HAPPY, getLocation(), 1);
+            getLocation().getWorld().playSound(getLocation(), Sound.BLOCK_NOTE_HARP, 2f, (float) (Math.random()));
+        }, 1l, 10L);
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(ElytraBoostPlugin.getPlugin(), () -> {
-            Bukkit.getScheduler().cancelTask(taskId);
-        }, 5 * 20l);
     }
+
+    public void stopShowingLocation() {
+        if (showingLocationID != -1) {
+            Bukkit.getScheduler().cancelTask(showingLocationID);
+            showingLocationID = -1;
+        }
+    }
+
+    public boolean isShowing() {
+        return showingLocationID != -1;
+    }
+
+    public void setCooldownTime(long cooldownTime) {
+        this.cooldownTime = cooldownTime;
+    }
+    
+    
 
 }
