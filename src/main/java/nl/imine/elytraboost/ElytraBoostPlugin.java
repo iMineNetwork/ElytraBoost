@@ -18,7 +18,8 @@ public class ElytraBoostPlugin extends JavaPlugin {
         plugin = this;
         settings = new Settings(this.getConfig());
         settings.createDefaults();
-
+        this.saveConfig();
+        
         Bukkit.getServer().getPluginManager().registerEvents(new ElytraBoostListener(), ElytraBoostPlugin.getPlugin());
 
         this.getCommand("elytraboost").setExecutor(new ElytraBoostCommand());

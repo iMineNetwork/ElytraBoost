@@ -15,6 +15,8 @@ public class Settings {
         CONFIGURATION.addDefault(Setting.DEFAULT_COOLDOWN_TIME, 30);
         CONFIGURATION.addDefault(Setting.DEFAULT_EFFECT_RADIUS, 3);
         CONFIGURATION.addDefault(Setting.DEFAULT_BOOST_POWER, 2);
+        
+        CONFIGURATION.options().copyDefaults(true);
     }
 
     public String getString(String configPath) {
