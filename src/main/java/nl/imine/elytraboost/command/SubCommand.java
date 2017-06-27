@@ -16,6 +16,8 @@ import org.bukkit.command.CommandSender;
 public interface SubCommand {
 
     public String getSubCommand();
+    
+    public String getDescription();
 
     public String getPermission();
 

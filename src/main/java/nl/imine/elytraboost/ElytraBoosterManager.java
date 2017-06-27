@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class ElytraBoosterManager {
@@ -19,10 +18,14 @@ public class ElytraBoosterManager {
 
     private ElytraBoosterManager() {
         options = new ArrayList<>();
-        options.add("cooldown");
+        options.add("cooldowntime");
+        options.add("effectradius");
+        options.add("location");
+        options.add("name");
         options.add("power");
         options.add("range");
-    }
+        options.add("requiresunlock");
+    }   
 
     public static ElytraBoosterManager getInstance() {
         if (instance == null) {

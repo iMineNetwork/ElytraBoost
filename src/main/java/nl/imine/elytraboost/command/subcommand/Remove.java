@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import nl.imine.elytraboost.ElytraBooster;
 import nl.imine.elytraboost.ElytraBoosterManager;
+import nl.imine.elytraboost.Util;
 import nl.imine.elytraboost.command.SubCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -14,6 +14,11 @@ public class Remove implements SubCommand {
     @Override
     public String getSubCommand() {
         return "remove";
+    }
+
+    @Override
+    public String getDescription() {
+        return "removes an existing elytrabooster.";
     }
 
     @Override
@@ -41,24 +46,11 @@ public class Remove implements SubCommand {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        String name = "";
-        int ID = 0;
-
-        boolean usingID = false;
-
-        try {
-            ID = Integer.parseInt(args[1]);
-            usingID = true;
-        } catch (NumberFormatException ex) {
-
-        }
-
-        for (ElytraBooster booster : ElytraBoosterManager.getInstance().getBoosters()) {
-            if ((usingID ? booster.getID() == ID : booster.getName().equals(name))) {
-                booster.stopShowingLocation();
-                ElytraBoosterManager.getInstance().getBoosters().remove(booster);
-                return true;
-            }
+        ElytraBooster booster = Util.getBooster(args[1]);
+        if (booster != null) {
+            booster.stopShowingLocation();
+            ElytraBoosterManager.getInstance().getBoosters().remove(booster);
+            return true;
         }
         return false;
     }

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import nl.imine.elytraboost.ElytraBooster;
 import nl.imine.elytraboost.ElytraBoosterManager;
+import nl.imine.elytraboost.Util;
 import nl.imine.elytraboost.command.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,11 @@ public class HideLocation implements SubCommand {
     @Override
     public String getSubCommand() {
         return "hidelocation";
+    }
+
+    @Override
+    public String getDescription() {
+        return "hide the location of one or mor elytraboosters.";
     }
 
     @Override
@@ -42,51 +48,33 @@ public class HideLocation implements SubCommand {
 
     @Override
     public boolean isPlayerOnly() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        String name = "";
-        int id = 0;
-        boolean usingID = false;
+        ElytraBooster booster = Util.getBooster(args[1]);
 
-        try {
-            id = Integer.parseInt(args[1]);
-            usingID = true;
-        } catch (NumberFormatException e) {
-            name = args[1];
-        }
-
-        ElytraBooster booster = null;
-
-        for (ElytraBooster elytraBooster : ElytraBoosterManager.getInstance().getBoosters()) {
-            if (usingID ? elytraBooster.getID() == id : elytraBooster.getName().equals(name)) {
-                booster = elytraBooster;
-                break;
-            }
-        }
-
-        if (booster == null && !name.equals("all")) {
+        if (booster == null && args[1].equals("all")) {
             return false;
         }
 
-        if (name.equals("all")) {
+        if (args[1].equals("all")) {
             ElytraBoosterManager.getInstance().getBoosters().forEach(booster1 -> {
                 booster1.stopShowingLocation();
             });
             return true;
+        } else {
+            booster.stopShowingLocation();
         }
-
-        booster.stopShowingLocation();
 
         return true;
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>();
+        return new ArrayList<>(); //sending an empty arraylist prevents tabcomplete instead of suggesting playernames
     }
 
 }

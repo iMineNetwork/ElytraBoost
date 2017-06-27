@@ -10,10 +10,13 @@ import java.util.List;
 import nl.imine.elytraboost.command.subcommand.BoosterList;
 import nl.imine.elytraboost.command.subcommand.Create;
 import nl.imine.elytraboost.command.subcommand.Edit;
+import nl.imine.elytraboost.command.subcommand.Help;
 import nl.imine.elytraboost.command.subcommand.HideLocation;
-import nl.imine.elytraboost.command.subcommand.Reload;
+import nl.imine.elytraboost.command.subcommand.Load;
 import nl.imine.elytraboost.command.subcommand.Remove;
+import nl.imine.elytraboost.command.subcommand.Save;
 import nl.imine.elytraboost.command.subcommand.ShowLocation;
+import nl.imine.elytraboost.command.subcommand.Teleport;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -29,15 +32,22 @@ public class ElytraBoostCommand implements CommandExecutor, TabCompleter {
 
     private static List<SubCommand> subcommands;
 
+    public static List<SubCommand> getSubcommands() {
+        return subcommands;
+    }
+
     public static void init() {
         subcommands = new ArrayList<>();
         subcommands.add(new Create());
         subcommands.add(new Edit());
         subcommands.add(new BoosterList());
-        subcommands.add(new Reload());
-        subcommands.add(new Remove());
-        subcommands.add(new ShowLocation());
+        subcommands.add(new Help());
         subcommands.add(new HideLocation());
+        subcommands.add(new Load());
+        subcommands.add(new Remove());
+        subcommands.add(new Save());
+        subcommands.add(new ShowLocation());
+        subcommands.add(new Teleport());
     }
 
     @Override
@@ -55,8 +65,8 @@ public class ElytraBoostCommand implements CommandExecutor, TabCompleter {
         for (SubCommand subcommand : subcommands) {
             if (subcommand.getSubCommand().equals(args[0])) {
 
-                //only subcommand without further arguments, and no usages beside subcommand only
-                if (args.length == 1 && !subcommand.getUsage().isEmpty()) {
+                //send usages if the subcommand only is not enough to run the full command
+                if (args.length == 1 && subcommand.getUsage() != null) {
                     subcommand.getUsage()
                             .forEach(usage -> {
                                 sender.sendMessage(ChatColor.RED + "" + usage);
@@ -65,16 +75,15 @@ public class ElytraBoostCommand implements CommandExecutor, TabCompleter {
 
                 }
 
-                sender.sendMessage("Executing " + subcommand.getSubCommand());
                 if (subcommand.isPlayerOnly() && !isPlayer) {
                     sender.sendMessage("You are not a player");
                     return true;
                 }
 
                 if (subcommand.onCommand(sender, command, label, args)) {
-                    sender.sendMessage("succes");
+                    System.out.println(sender.getName() + " has was succesfull in running the elytrabooster command");
                 } else {
-                    sender.sendMessage("faillure");
+                    System.out.println(sender.getName() + " has was unsuccesfull in running the elytrabooster command");
                 }
                 return true;
             }
@@ -93,8 +102,8 @@ public class ElytraBoostCommand implements CommandExecutor, TabCompleter {
                     .stream()
                     .filter(subcommand -> subcommand.getSubCommand().startsWith(args[0]))
                     .forEach(subcommand -> {
-                ret.add(subcommand.getSubCommand());
-            });
+                        ret.add(subcommand.getSubCommand());
+                    });
             return ret;
         }
 

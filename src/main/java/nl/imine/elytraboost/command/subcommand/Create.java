@@ -5,10 +5,12 @@ import java.util.List;
 import nl.imine.elytraboost.ElytraBoostPlugin;
 import nl.imine.elytraboost.ElytraBooster;
 import nl.imine.elytraboost.ElytraBoosterManager;
+import nl.imine.elytraboost.Util;
 import nl.imine.elytraboost.command.SubCommand;
 import nl.imine.minigame.cluedo.settings.Setting;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,6 +20,11 @@ public class Create implements SubCommand {
     @Override
     public String getSubCommand() {
         return "create";
+    }
+
+    @Override
+    public String getDescription() {
+        return "create a new elytrabooster.";
     }
 
     @Override
@@ -62,7 +69,7 @@ public class Create implements SubCommand {
         if (args.length >= 2) {
             name = args[1];
             for (ElytraBooster booster : ElytraBoosterManager.getInstance().getBoosters()) {
-                if(booster.getName().equals(name)){
+                if (booster.getName().equals(name)) {
                     player.sendMessage(ChatColor.RED + "A booster with the name " + name + " already exists.");
                     return false;
                 }
@@ -72,9 +79,12 @@ public class Create implements SubCommand {
 
         if (args.length >= 5) {
             try {
-                location = new Location(player.getWorld(), Double.parseDouble(args[2]), Double.parseDouble(args[3]), Double.parseDouble(args[4]));
+                location = Util.getRelativePosition(location, args[2], args[3], args[4]);
             } catch (NumberFormatException nfe) {
-                player.sendMessage(ChatColor.RED + "something went wrong while reading the location");
+                for (StackTraceElement s : nfe.getStackTrace()) {
+                    player.sendMessage(s.toString());
+                }
+                player.sendMessage(ChatColor.RED + "something went wrong while reading the location <3");
                 return false;
             }
         }
@@ -103,7 +113,7 @@ public class Create implements SubCommand {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>();
+        return new ArrayList<>(); //sending an empty arraylist prevents tabcomplete instead of suggesting playernames
     }
 
 }
